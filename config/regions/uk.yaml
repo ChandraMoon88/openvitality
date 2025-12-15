@@ -1,0 +1,48 @@
+# config/regions/uk.yaml
+#
+# United Kingdom-specific configuration details.
+
+country_code: "GB" # Using GB as it's often used for UK in standards like ISO 3166-1
+
+emergency_numbers:
+  emergency: "999" # General emergency (Police, Fire, Ambulance)
+  nhs_advice: "111" # Non-emergency medical advice
+
+# Currency and formatting
+currency: "GBP"
+currency_symbol: "£"
+date_format: "DD/MM/YYYY"
+time_format: "24h"
+
+# Primary languages spoken
+primary_languages:
+  - en # English
+
+# Healthcare system specifics
+insurance_system: "National Health Service (NHS)"
+privacy_law: "UK General Data Protection Regulation (UK GDPR)"
+telemedicine_legal_status: true
+
+# Units of measurement (officially metric, but some imperial is common)
+units:
+  temperature: "celsius"
+  weight: "kg" # Officially kg, but stones/pounds often used informally
+  height: "cm" # Officially cm, but feet/inches often used informally
+
+# Terminology and system specifics
+terminology:
+  system: "british_english"
+  # Key vocabulary differences from US English.
+  map:
+    "Physician": "GP (General Practitioner)"
+    "ER (Emergency Room)": "A&E (Accident & Emergency)"
+    "Copay": "Prescription Charge"
+    "Deductible": "N/A (covered by NHS)"
+    "Drugstore": "Pharmacy" or "Chemist"
+
+# Specific identifiers used in the UK healthcare system.
+nhs_number_validation:
+  enabled: true
+  # Basic validation: 10 digits, with a specific checksum algorithm.
+  # The actual algorithm would be implemented in code.
+  format: "10 digits"

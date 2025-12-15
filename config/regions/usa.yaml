@@ -1,0 +1,40 @@
+# config/regions/usa.yaml
+#
+# United States-specific configuration details.
+
+country_code: "US"
+
+emergency_numbers:
+  emergency: "911" # General emergency (Police, Fire, Ambulance)
+  poison_control: "1-800-222-1222"
+  suicide_hotline: "988"
+  non_emergency_police: "311" # In many cities
+
+# Currency and formatting
+currency: "USD"
+currency_symbol: "$"
+date_format: "MM/DD/YYYY" # Month/Day/Year
+time_format: "12h" # AM/PM clock
+
+# Primary languages spoken
+primary_languages:
+  - en # English
+  - es # Spanish
+
+# Healthcare system specifics
+insurance_system: "private_medicare_medicaid"
+privacy_law: "Health Insurance Portability and Accountability Act (HIPAA)"
+telemedicine_legal_status: true # Varies by state, but generally accepted.
+
+# Units of measurement
+units:
+  temperature: "fahrenheit"
+  weight: "lbs" # pounds
+  height: "feet_inches"
+
+# Cultural notes for the AI.
+cultural_notes:
+  communication_style: "direct" # Patients often prefer direct and clear information.
+  insurance_upfront: true # It's common to ask about insurance and costs early.
+  litigation_risk: "high" # Language must be extremely careful to avoid liability. Emphasize "not a doctor" disclaimer.
+  patient_autonomy: "high" # Patients expect to be involved in decisions.

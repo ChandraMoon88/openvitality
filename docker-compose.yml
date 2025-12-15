@@ -1,0 +1,49 @@
+# docker-compose.yml
+#
+# Use this to run the application and its dependencies in Docker.
+# To run: docker-compose up
+#
+# This setup is for development and single-instance deployment.
+# It uses an in-memory cache instead of Redis.
+
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: openvitality_api
+    ports:
+      - "8000:8000"
+    volumes:
+      # For development, mount the source code for hot-reloading
+      - ./src:/app/src
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - chromadb
+    command: uvicorn src.core.main:app --host 0.0.0.0 --port 8000 --reload
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: openvitality_postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=${DATABASE_NAME}
+    ports:
+      - "5432:5432"
+
+  chromadb:
+    image: chromadb/chroma:0.4.22
+    container_name: openvitality_chromadb
+    volumes:
+      - chroma_data:/chroma/chroma
+    ports:
+      - "8001:8000" # Exposing ChromaDB's API on host port 8001
+
+volumes:
+  postgres_data:
+  chroma_data:

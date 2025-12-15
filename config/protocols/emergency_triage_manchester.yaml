@@ -1,0 +1,14 @@
+immediate_red:
+  - airway_compromised
+  - uncontrollable_bleeding
+  - cardiac_arrest
+
+very_urgent_orange:
+  - chest_pain_cardiac
+  - severe_pain_8_to_10
+  - stroke_symptoms
+
+urgent_yellow:
+  - moderate_pain_5_to_7
+  - fever_over_104F
+  - vomiting_persistent

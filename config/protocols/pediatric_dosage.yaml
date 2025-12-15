@@ -1,0 +1,9 @@
+amoxicillin:
+  dose_mg_per_kg: "20-40"
+  frequency: "Every 8 hours"
+  max_daily_dose_mg: 3000
+  liquid_concentration: "125mg per 5ml"
+  example: "For 15kg child: 300-600mg per dose"
+
+warnings:
+  - "Do not give aspirin to children"

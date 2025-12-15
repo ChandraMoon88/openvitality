@@ -1,0 +1,64 @@
+# --------------------------------------------------------------------------------
+# PRODUCTION DEPENDENCIES
+#
+# This file lists the exact versions of Python packages required to run the
+# application in a production environment. Pinning versions ensures that the
+# application is reproducible and stable.
+#
+# To install, run: `pip install -r requirements.txt`
+# --------------------------------------------------------------------------------
+
+# Web Framework and Server
+fastapi
+uvicorn[standard]
+
+# Text-to-Speech (TTS) - Free and unlimited
+edge-tts
+
+# Speech-to-Text (STT) - Free tier via Google's service
+SpeechRecognition
+
+# Google Generative AI (Gemini)
+google-generativeai
+
+# SIP (VoIP) Stack
+# Note: pjsua2 requires manual installation of PJSIP libraries.
+# See project documentation for setup instructions.
+# This is a placeholder; actual library might not be on PyPI.
+# pjsua2==...
+
+# Vector Database for RAG (Retrieval-Augmented Generation)
+chromadb
+
+# Database ORM and Migrations
+sqlalchemy
+alembic
+psycopg2-binary # PostgreSQL driver
+
+# PII (Personally Identifiable Information) Scrubbing
+presidio-analyzer
+presidio-anonymizer
+# spaCy model required by presidio
+# Install separately via: python -m spacy download en_core_web_lg
+spacy
+
+# Natural Language Processing for Indian Languages
+indic-nlp-library
+
+# Cryptography for encrypting secrets
+cryptography
+
+# Load environment variables from .env file
+python-dotenv
+
+# Spell Checking
+pyspellchecker
+
+#extra
+pytest
+transitions
+watchdog
+asyncpg
+apscheduler
+googletrans
+openai

@@ -1,0 +1,10 @@
+name: "Default"
+country_code: "US"
+emergency_numbers:
+  emergency: "911"
+currency: "USD"
+date_format: "MM/DD/YYYY"
+primary_languages: 
+  - en
+units:
+  temperature: "fahrenheit"

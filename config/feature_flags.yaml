@@ -1,0 +1,11 @@
+enable_voice_input: true
+enable_sip_calling: true
+enable_video_calls: false  # (build later)
+enable_web_search: true  # (for looking up drugs)
+enable_appointment_booking: true
+enable_prescription_generation: false  # (requires doctor verification)
+use_mock_data: false  # (true in dev/test)
+maintenance_mode: false  # (true during updates)
+strict_safety_mode: true  # (ALWAYS true for healthcare)
+enable_emergency_detection: true
+enable_multilingual: true

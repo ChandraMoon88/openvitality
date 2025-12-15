@@ -1,0 +1,50 @@
+# config/regions/india.yaml
+#
+# India-specific configuration details.
+
+country_code: "IN"
+
+emergency_numbers:
+  ambulance: "108"
+  police: "100"
+  fire: "101"
+  national_emergency: "112"
+  women_helpline: "1091"
+
+# Currency and formatting
+currency: "INR"
+currency_symbol: "₹"
+date_format: "DD/MM/YYYY" # Day/Month/Year
+time_format: "24h" # 24-hour clock
+
+# Primary languages spoken, in order of prevalence.
+primary_languages:
+  - hi # Hindi
+  - te # Telugu
+  - ta # Tamil
+  - bn # Bengali
+  - mr # Marathi
+
+# Healthcare system specifics
+insurance_system: "ayushman_bharat"
+privacy_law: "Digital Personal Data Protection Act, 2023 (DPDP)"
+telemedicine_legal_status: true
+
+# Units of measurement
+units:
+  temperature: "celsius"
+  weight: "kg"
+  height: "cm"
+
+# Cultural notes for the AI to provide more empathetic and relevant responses.
+cultural_notes:
+  use_respectful_suffixes: true # e.g., "Ji", "Sir", "Madam"
+  family_context_important: true # Decisions often involve family.
+  prefer_generic_drugs: true # High price sensitivity.
+  # Common pharmacy types to be aware of.
+  pharmacy_types:
+    - "jan_aushadhi" # Government-run generic pharmacies
+    - "retail"
+    - "hospital"
+  # Acknowledge traditional medicine but always guide towards evidence-based practices.
+  traditional_medicine_awareness: "Ayurveda, Homeopathy"

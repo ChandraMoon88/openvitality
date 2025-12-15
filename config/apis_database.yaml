@@ -1,0 +1,1248 @@
+# OpenVitality AI - Comprehensive Open Source APIs Database
+# This file contains all free and open-source APIs relevant to the healthcare voice AI project
+# Format: YAML for easy parsing and human readability
+# Last Updated: 2025-01-15
+
+version: "1.0.0"
+project: "OpenVitality AI"
+description: "Complete database of free and open-source APIs for healthcare voice AI"
+
+# =============================================================================
+# MEDICAL KNOWLEDGE & DRUG DATABASES
+# =============================================================================
+
+medical_knowledge:
+  
+  # World Health Organization
+  who_fhir:
+    name: "WHO FHIR API"
+    description: "WHO guidelines, disease classifications, and health standards"
+    base_url: "https://www.who.int/fhir"
+    documentation: "https://www.who.int/data/gho"
+    authentication: "None (public access)"
+    rate_limit: "Unlimited"
+    cost: "Free"
+    data_format: ["JSON", "XML", "FHIR"]
+    use_cases:
+      - "Disease information"
+      - "Treatment guidelines"
+      - "Vaccine schedules"
+      - "Global health statistics"
+    regions: ["Global"]
+    
+  # US National Library of Medicine
+  nlm_pubmed:
+    name: "PubMed/MEDLINE API"
+    description: "Access to 35+ million biomedical literature citations"
+    base_url: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
+    documentation: "https://www.ncbi.nlm.nih.gov/books/NBK25501/"
+    authentication: "API key (free, optional but recommended)"
+    rate_limit: "3 requests/second (10/sec with key)"
+    cost: "Free"
+    data_format: ["XML", "JSON"]
+    endpoints:
+      search: "/esearch.fcgi"
+      fetch: "/efetch.fcgi"
+      summary: "/esummary.fcgi"
+    use_cases:
+      - "Medical research verification"
+      - "Treatment evidence"
+      - "Drug interactions research"
+    example_query: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=diabetes+treatment&retmode=json"
+    
+  # OpenFDA
+  openfda:
+    name: "openFDA"
+    description: "US FDA drug, device, and food databases"
+    base_url: "https://api.fda.gov"
+    documentation: "https://open.fda.gov/apis/"
+    authentication: "API key (free, optional)"
+    rate_limit: "240 requests/minute (1000/minute with key)"
+    cost: "Free"
+    data_format: ["JSON"]
+    endpoints:
+      drug_events: "/drug/event.json"
+      drug_labels: "/drug/label.json"
+      drug_enforcement: "/drug/enforcement.json"
+      device_events: "/device/event.json"
+      food_enforcement: "/food/enforcement.json"
+      recalls: "/drug/recall.json"
+    use_cases:
+      - "Drug safety information"
+      - "Adverse event reports"
+      - "Drug labeling"
+      - "Recalls and enforcement"
+      - "Black box warnings"
+    example_query: "https://api.fda.gov/drug/label.json?search=openfda.brand_name:tylenol"
+    
+  # RxNorm (Drug Normalization)
+  rxnorm:
+    name: "RxNorm API"
+    description: "Normalized drug names and identifiers"
+    base_url: "https://rxnav.nlm.nih.gov/REST"
+    documentation: "https://lhncbc.nlm.nih.gov/RxNav/APIs/RxNormAPIs.html"
+    authentication: "None"
+    rate_limit: "20 requests/second"
+    cost: "Free"
+    data_format: ["JSON", "XML"]
+    endpoints:
+      drugs: "/drugs.json"
+      rxcui: "/rxcui.json"
+      spelling: "/spellingsuggestions.json"
+      interactions: "/interaction/list.json"
+    use_cases:
+      - "Drug name standardization"
+      - "Brand to generic mapping"
+      - "Drug interaction checking"
+      - "Dosage information"
+    example_query: "https://rxnav.nlm.nih.gov/REST/rxcui.json?name=tylenol"
+    
+  # DailyMed
+  dailymed:
+    name: "DailyMed API"
+    description: "FDA drug labeling and package inserts"
+    base_url: "https://dailymed.nlm.nih.gov/dailymed"
+    documentation: "https://dailymed.nlm.nih.gov/dailymed/app-support-web-services.cfm"
+    authentication: "None"
+    rate_limit: "Reasonable use"
+    cost: "Free"
+    data_format: ["XML", "JSON"]
+    use_cases:
+      - "Full prescribing information"
+      - "Patient information leaflets"
+      - "Drug interactions"
+    
+  # Clinical Trials
+  clinicaltrials_gov:
+    name: "ClinicalTrials.gov API"
+    description: "Database of clinical studies worldwide"
+    base_url: "https://clinicaltrials.gov/api/v2"
+    documentation: "https://clinicaltrials.gov/data-api/api"
+    authentication: "None"
+    rate_limit: "Reasonable use"
+    cost: "Free"
+    data_format: ["JSON", "CSV"]
+    use_cases:
+      - "Finding clinical trials"
+      - "Treatment research"
+      - "Experimental therapies"
+
+# =============================================================================
+# MEDICAL CODING & TERMINOLOGY STANDARDS
+# =============================================================================
+
+medical_terminology:
+  
+  # ICD-10 (International Classification of Diseases)
+  icd10_api:
+    name: "ICD-10-CM API"
+    description: "Disease classification codes for billing and diagnosis"
+    base_url: "https://clinicaltables.nlm.nih.gov/api/icd10cm/v3/search"
+    documentation: "https://clinicaltables.nlm.nih.gov/"
+    authentication: "None"
+    rate_limit: "Unlimited"
+    cost: "Free"
+    data_format: ["JSON"]
+    use_cases:
+      - "Disease code lookup"
+      - "Billing codes"
+      - "Insurance claims"
+      - "Medical records"
+    example_query: "https://clinicaltables.nlm.nih.gov/api/icd10cm/v3/search?sf=code,name&terms=diabetes"
+    
+  # SNOMED CT
+  snomed_browser:
+    name: "SNOMED CT Browser API"
+    description: "Comprehensive medical terminology"
+    base_url: "https://browser.ihtsdotools.org/snowstorm/snomed-ct"
+    documentation: "https://github.com/IHTSDO/snowstorm"
+    authentication: "None for public browser"
+    rate_limit: "Reasonable use"
+    cost: "Free (license required for some countries)"
+    data_format: ["JSON"]
+    use_cases:
+      - "Medical term standardization"
+      - "Synonym mapping"
+      - "Concept relationships"
+    
+  # LOINC (Lab Test Codes)
+  loinc_api:
+    name: "LOINC API"
+    description: "Laboratory and clinical observation codes"
+    base_url: "https://fhir.loinc.org"
+    documentation: "https://loinc.org/fhir/"
+    authentication: "Free account required"
+    rate_limit: "Reasonable use"
+    cost: "Free"
+    data_format: ["FHIR/JSON"]
+    use_cases:
+      - "Lab test standardization"
+      - "Test result interpretation"
+      - "Clinical observations"
+    
+  # UMLS (Unified Medical Language System)
+  umls_api:
+    name: "UMLS Metathesaurus API"
+    description: "Integrates medical terminology from multiple sources"
+    base_url: "https://uts-ws.nlm.nih.gov/rest"
+    documentation: "https://documentation.uts.nlm.nih.gov/rest/home.html"
+    authentication: "UMLS license + API key (both free)"
+    rate_limit: "20 requests/second"
+    cost: "Free (requires free license)"
+    data_format: ["JSON", "XML"]
+    use_cases:
+      - "Multi-terminology mapping"
+      - "Concept identification"
+      - "Semantic relationships"
+
+# =============================================================================
+# SPEECH-TO-TEXT (STT) APIS
+# =============================================================================
+
+speech_to_text:
+  
+  # Google Web Speech API (via SpeechRecognition library)
+  google_web_speech:
+    name: "Google Web Speech API"
+    description: "Unlimited free speech recognition"
+    base_url: "Built into Chrome browser"
+    library: "SpeechRecognition Python library"
+    documentation: "https://github.com/Uberi/speech_recognition"
+    authentication: "None"
+    rate_limit: "Unlimited"
+    cost: "Free (uses undocumented API)"
+    languages: "120+"
+    accuracy: "Good for general use, lower for medical terms"
+    use_cases:
+      - "Primary free STT"
+      - "Multi-language support"
+      - "Backup for paid services"
+    installation: "pip install SpeechRecognition"
+    
+  # Groq Whisper API
+  groq_whisper:
+    name: "Groq Whisper API"
+    description: "Fastest Whisper inference (under 300ms)"
+    base_url: "https://api.groq.com/openai/v1/audio/transcriptions"
+    documentation: "https://console.groq.com/docs/speech-text"
+    authentication: "API key (free)"
+    rate_limit: "100 requests/minute (free tier)"
+    cost: "Free tier available"
+    model: "whisper-large-v3"
+    languages: "99+"
+    accuracy: "Excellent, medical-grade"
+    use_cases:
+      - "Primary STT for production"
+      - "Medical terminology recognition"
+      - "Multi-language support"
+    example_curl: |
+      curl https://api.groq.com/openai/v1/audio/transcriptions \
+        -H "Authorization: Bearer $GROQ_API_KEY" \
+        -F file=@audio.mp3 -F model=whisper-large-v3
+    
+  # Vosk (Offline)
+  vosk:
+    name: "Vosk Speech Recognition"
+    description: "Offline speech recognition"
+    base_url: "https://alphacephei.com/vosk/"
+    documentation: "https://alphacephei.com/vosk/api"
+    authentication: "None (self-hosted)"
+    rate_limit: "Unlimited (local)"
+    cost: "Free and open source"
+    languages: "20+ (download models)"
+    use_cases:
+      - "Offline fallback"
+      - "Privacy-sensitive deployments"
+      - "No internet connection scenarios"
+    installation: "pip install vosk"
+    
+  # Mozilla DeepSpeech
+  deepspeech:
+    name: "Mozilla DeepSpeech"
+    description: "Open source speech-to-text engine"
+    base_url: "https://github.com/mozilla/DeepSpeech"
+    documentation: "https://deepspeech.readthedocs.io/"
+    authentication: "None (self-hosted)"
+    rate_limit: "Unlimited (local)"
+    cost: "Free and open source"
+    status: "Archived but still functional"
+    use_cases:
+      - "Offline processing"
+      - "Custom model training"
+    
+  # Whisper.cpp (Optimized)
+  whisper_cpp:
+    name: "Whisper.cpp"
+    description: "C++ port of OpenAI Whisper for speed"
+    base_url: "https://github.com/ggerganov/whisper.cpp"
+    documentation: "https://github.com/ggerganov/whisper.cpp#usage"
+    authentication: "None (self-hosted)"
+    rate_limit: "Unlimited (local)"
+    cost: "Free and open source"
+    performance: "4x faster than Python Whisper"
+    use_cases:
+      - "High-performance STT"
+      - "Self-hosted deployment"
+      - "CPU-optimized inference"
+
+# =============================================================================
+# TEXT-TO-SPEECH (TTS) APIS
+# =============================================================================
+
+text_to_speech:
+  
+  # Edge TTS (Primary - Unlimited Free)
+  edge_tts:
+    name: "Edge TTS"
+    description: "Microsoft Edge's text-to-speech API"
+    base_url: "Uses Microsoft Edge browser API"
+    library: "edge-tts Python package"
+    documentation: "https://github.com/rany2/edge-tts"
+    authentication: "None"
+    rate_limit: "Unlimited"
+    cost: "Free forever (no official API but widely used)"
+    quality: "Neural voices, very natural"
+    languages: "100+"
+    voices: "400+"
+    use_cases:
+      - "Primary TTS engine (95% of usage)"
+      - "Multi-language support"
+      - "Production deployment"
+    installation: "pip install edge-tts"
+    example_usage: |
+      import edge_tts
+      communicate = edge_tts.Communicate("Hello World", "en-US-JennyNeural")
+      await communicate.save("output.mp3")
+    
+  # eSpeak NG (Offline)
+  espeak_ng:
+    name: "eSpeak NG"
+    description: "Compact open source speech synthesizer"
+    base_url: "https://github.com/espeak-ng/espeak-ng"
+    documentation: "https://github.com/espeak-ng/espeak-ng/blob/master/docs/guide.md"
+    authentication: "None (self-hosted)"
+    rate_limit: "Unlimited (local)"
+    cost: "Free and open source"
+    quality: "Robotic but intelligible"
+    languages: "100+"
+    use_cases:
+      - "Offline fallback"
+      - "Emergency backup"
+      - "Low-resource environments"
+    installation: "apt-get install espeak-ng"
+    
+  # Coqui TTS
+  coqui_tts:
+    name: "Coqui TTS"
+    description: "Deep learning toolkit for Text-to-Speech"
+    base_url: "https://github.com/coqui-ai/TTS"
+    documentation: "https://tts.readthedocs.io/"
+    authentication: "None (self-hosted)"
+    rate_limit: "Unlimited (local)"
+    cost: "Free and open source"
+    quality: "High quality neural voices"
+    model: "XTTS-v2 (16 languages)"
+    use_cases:
+      - "High-quality offline TTS"
+      - "Voice cloning"
+      - "Custom voice training"
+    installation: "pip install TTS"
+    
+  # Google TTS (Free Tier)
+  google_cloud_tts:
+    name: "Google Cloud Text-to-Speech"
+    base_url: "https://texttospeech.googleapis.com/v1/text:synthesize"
+    documentation: "https://cloud.google.com/text-to-speech/docs"
+    authentication: "API key (free)"
+    rate_limit: "100 requests/minute"
+    cost: "4 million characters/month free (Standard voices)"
+    quality: "Excellent neural voices"
+    languages: "40+"
+    use_cases:
+      - "Backup for Edge TTS"
+      - "Higher quality when needed"
+    
+  # Festival
+  festival_tts:
+    name: "Festival Speech Synthesis"
+    description: "General multi-lingual speech synthesis"
+    base_url: "http://www.cstr.ed.ac.uk/projects/festival/"
+    documentation: "http://www.festvox.org/docs/manual-2.4.0/"
+    authentication: "None (self-hosted)"
+    rate_limit: "Unlimited (local)"
+    cost: "Free and open source"
+    use_cases:
+      - "Legacy systems"
+      - "Offline synthesis"
+
+# =============================================================================
+# LANGUAGE TRANSLATION
+# =============================================================================
+
+translation:
+  
+  # LibreTranslate (Self-hosted)
+  libretranslate:
+    name: "LibreTranslate"
+    description: "Free and open source machine translation"
+    base_url: "https://libretranslate.com/translate"
+    documentation: "https://github.com/LibreTranslate/LibreTranslate"
+    authentication: "API key (free for public instance)"
+    rate_limit: "Public instance has limits, unlimited if self-hosted"
+    cost: "Free (self-hosted) or free tier on public instance"
+    languages: "30+"
+    use_cases:
+      - "Primary translation engine"
+      - "Privacy-conscious translation"
+      - "Offline capability"
+    installation: "pip install libretranslate"
+    self_hosted_command: "libretranslate --host 0.0.0.0 --port 5000"
+    
+  # Argos Translate
+  argos_translate:
+    name: "Argos Translate"
+    description: "Offline translation library"
+    base_url: "https://github.com/argosopentech/argos-translate"
+    documentation: "https://www.argosopentech.com/"
+    authentication: "None (library)"
+    rate_limit: "Unlimited (local)"
+    cost: "Free and open source"
+    languages: "40+ language pairs"
+    use_cases:
+      - "Offline translation"
+      - "Embedded in application"
+      - "No API dependency"
+    installation: "pip install argostranslate"
+    
+  # OPUS-MT Models (Hugging Face)
+  opus_mt:
+    name: "OPUS-MT Translation Models"
+    description: "Neural machine translation models"
+    base_url: "https://huggingface.co/Helsinki-NLP"
+    documentation: "https://github.com/Helsinki-NLP/Opus-MT"
+    authentication: "Hugging Face API key (free)"
+    rate_limit: "Inference API limits (generous free tier)"
+    cost: "Free"
+    languages: "1000+ language pairs"
+    use_cases:
+      - "High-quality translation"
+      - "Medical terminology preservation"
+    example_model: "Helsinki-NLP/opus-mt-en-hi"
+    
+  # Meta NLLB-200
+  nllb_200:
+    name: "No Language Left Behind (NLLB-200)"
+    description: "Meta's 200-language translation model"
+    base_url: "https://huggingface.co/facebook/nllb-200-distilled-600M"
+    documentation: "https://github.com/facebookresearch/fairseq/tree/nllb"
+    authentication: "None (self-hosted)"
+    rate_limit: "Unlimited (local)"
+    cost: "Free and open source"
+    languages: "200+"
+    use_cases:
+      - "Low-resource languages"
+      - "Indian languages"
+      - "African languages"
+
+# =============================================================================
+# NATURAL LANGUAGE PROCESSING
+# =============================================================================
+
+nlp_libraries:
+  
+  # Hugging Face Inference API
+  huggingface_inference:
+    name: "Hugging Face Inference API"
+    description: "Free inference for 150,000+ models"
+    base_url: "https://api-inference.huggingface.co/models"
+    documentation: "https://huggingface.co/docs/api-inference/"
+    authentication: "API token (free)"
+    rate_limit: "1000 requests/day free tier"
+    cost: "Free tier available"
+    use_cases:
+      - "Zero-shot classification"
+      - "Named entity recognition"
+      - "Sentiment analysis"
+      - "Translation"
+      - "Summarization"
+    example_models:
+      intent_classification: "facebook/bart-large-mnli"
+      ner_medical: "d4data/biomedical-ner-all"
+      sentiment: "distilbert-base-uncased-finetuned-sst-2-english"
+      translation_hi: "Helsinki-NLP/opus-mt-en-hi"
+    
+  # spaCy
+  spacy:
+    name: "spaCy"
+    description: "Industrial-strength NLP library"
+    base_url: "https://spacy.io/"
+    documentation: "https://spacy.io/usage"
+    authentication: "None (library)"
+    rate_limit: "Unlimited (local)"
+    cost: "Free and open source"
+    models:
+      english: "en_core_web_sm"
+      spanish: "es_core_news_sm"
+      german: "de_core_news_sm"
+      french: "fr_core_news_sm"
+      medical: "en_core_sci_sm (scispaCy)"
+    use_cases:
+      - "Tokenization"
+      - "POS tagging"
+      - "Named entity recognition"
+      - "Dependency parsing"
+    installation: "pip install spacy"
+    
+  # scispaCy (Medical NLP)
+  scispacy:
+    name: "scispaCy"
+    description: "spaCy models for biomedical text"
+    base_url: "https://allenai.github.io/scispacy/"
+    documentation: "https://github.com/allenai/scispacy"
+    authentication: "None (library)"
+    rate_limit: "Unlimited (local)"
+    cost: "Free and open source"
+    models:
+      ner: "en_ner_bc5cdr_md"  # Disease and chemical NER
+      ner_bionlp: "en_ner_bionlp13cg_md"
+      core: "en_core_sci_sm"
+    use_cases:
+      - "Medical entity extraction"
+      - "Drug name recognition"
+      - "Disease identification"
+    installation: "pip install scispacy"
+    
+  # IndicNLP (Indian Languages)
+  indicnlp:
+    name: "IndicNLP Library"
+    description: "NLP tools for Indian languages"
+    base_url: "https://github.com/anoopkunchukuttan/indic_nlp_library"
+    documentation: "https://anoopkunchukuttan.github.io/indic_nlp_library/"
+    authentication: "None (library)"
+    rate_limit: "Unlimited (local)"
+    cost: "Free and open source"
+    languages: ["Hindi", "Bengali", "Telugu", "Tamil", "Marathi", "Gujarati", "Kannada", "Malayalam", "Punjabi", "Urdu"]
+    use_cases:
+      - "Indian language tokenization"
+      - "Transliteration"
+      - "Script detection"
+      - "Normalization"
+    installation: "pip install indic-nlp-library"
+
+# =============================================================================
+# PRIVACY & SECURITY
+# =============================================================================
+
+privacy_security:
+  
+  # Microsoft Presidio
+  presidio:
+    name: "Microsoft Presidio"
+    description: "PII detection and anonymization"
+    base_url: "https://github.com/microsoft/presidio"
+    documentation: "https://microsoft.github.io/presidio/"
+    authentication: "None (library)"
+    rate_limit: "Unlimited (local)"
+    cost: "Free and open source"
+    detects:
+      - "Names"
+      - "Phone numbers"
+      - "Email addresses"
+      - "Credit card numbers"
+      - "SSN"
+      - "Medical record numbers"
+      - "Dates"
+      - "Locations"
+    use_cases:
+      - "Log anonymization"
+      - "HIPAA compliance"
+      - "GDPR compliance"
+    installation: "pip install presidio-analyzer presidio-anonymizer"
+    
+  # Faker
+  faker:
+    name: "Faker"
+    description: "Generate fake data for testing"
+    base_url: "https://github.com/joke2k/faker"
+    documentation: "https://faker.readthedocs.io/"
+    authentication: "None (library)"
+    rate_limit: "Unlimited (local)"
+    cost: "Free and open source"
+    generates:
+      - "Names"
+      - "Addresses"
+      - "Phone numbers"
+      - "Medical data"
+      - "Dates"
+    use_cases:
+      - "Testing"
+      - "Demo data"
+      - "Development"
+    installation: "pip install faker"
+
+# =============================================================================
+# HEALTHCARE STANDARDS & INTEROPERABILITY
+# =============================================================================
+
+healthcare_standards:
+  
+  # FHIR Server (HAPI)
+  hapi_fhir:
+    name: "HAPI FHIR"
+    description: "Open source FHIR server"
+    base_url: "https://hapi.fhir.org/"
+    documentation: "https://hapifhir.io/hapi-fhir/docs/"
+    authentication: "Configurable"
+    rate_limit: "Configurable (self-hosted)"
+    cost: "Free and open source"
+    use_cases:
+      - "Healthcare interoperability"
+      - "EHR integration"
+      - "Patient data exchange"
+    
+  # HL7 FHIR Public Test Servers
+  fhir_test_servers:
+    name: "Public FHIR Test Servers"
+    servers:
+      - name: "HAPI FHIR Test"
+        url: "http://hapi.fhir.org/baseR4"
+        version: "R4"
+      - name: "SMART Health IT"
+        url: "https://launch.smarthealthit.org/v/r4/fhir"
+        version: "R4"
+    use_cases:
+      - "Testing FHIR implementations"
+      - "Development"
+      - "Training"
+
+# =============================================================================
+# REGIONAL HEALTH SYSTEMS
+# =============================================================================
+
+regional_health:
+  
+  # India - ABDM (Ayushman Bharat Digital Mission)
+  abdm_india:
+    name: "ABDM Sandbox"
+    description: "India's national digital health ecosystem"
+    base_url: "https://sandbox.abdm.gov.in"
+    documentation: "https://sandbox.abdm.gov.in/docs"
+    authentication: "API key (free for testing)"
+    rate_limit: "Sandbox limits apply"
+    cost: "Free for testing"
+    apis:
+      - "Health ID generation"
+      - "Health Records"
+      - "Doctor registry"
+      - "Facility registry"
+    use_cases:
+      - "Indian health ID integration"
+      - "EHR access"
+      - "Doctor verification"
+    
+  # US - CMS Blue Button 2.0
+  cms_blue_button:
+    name: "CMS Blue Button 2.0"
+    description: "Medicare beneficiary data"
+    base_url: "https://sandbox.bluebutton.cms.gov"
+    documentation: "https://bluebutton.cms.gov/developers/"
+    authentication: "OAuth 2.0"
+    rate_limit: "Varies by tier"
+    cost: "Free"
+    use_cases:
+      - "Medicare data access"
+      - "Claims history"
+      - "Coverage information"
+    
+  # NHS Digital (UK)
+  nhs_digital:
+    name: "NHS Digital APIs"
+    description: "UK National Health Service APIs"
+    base_url: "https://digital.nhs.uk/developer"
+    documentation: "https://digital.nhs.uk/developer/api-catalogue"
+    authentication: "Varies by API"
+    rate_limit: "Varies by API"
+    cost: "Free for approved use cases"
+    apis:
+      - "GP Connect"
+      - "e-Prescriptions"
+      - "Appointments"
+      - "Patient demographics"
+
+# =============================================================================
+# EMERGENCY SERVICES & LOCATION
+# =============================================================================
+
+emergency_location:
+  
+  # Nominatim (OpenStreetMap Geocoding)
+  nominatim:
+    name: "Nominatim"
+    description: "Reverse geocoding and address lookup"
+    base_url: "https://nominatim.openstreetmap.org"
+    documentation: "https://nominatim.org/release-docs/latest/api/Overview/"
+    authentication: "None (attribution required)"
+    rate_limit: "1 request/second"
+    cost: "Free"
+    use_cases:
+      - "Convert GPS to address"
+      - "Emergency location services"
+      - "Hospital finder"
+    example_query: "https://nominatim.openstreetmap.org/reverse?format=json&lat=40.7128&lon=-74.0060"
+    
+  # IP Geolocation
+  ipapi:
+    name: "ipapi"
+    description: "IP geolocation"
+    base_url: "https://ipapi.co"
+    documentation: "https://ipapi.co/api/"
+    authentication: "None for basic use"
+    rate_limit: "1000 requests/day free"
+    cost: "Free tier available"
+    use_cases:
+      - "Detect user's country"
+      - "Regional routing"
+      - "Compliance (GDPR, DPDP)"
+    example_query: "https://ipapi.co/json/"
+    
+  # OpenCage Geocoding
+  opencage:
+    name: "OpenCage Geocoding API"
+    description: "Forward and reverse geocoding"
+    base_url: "https://api.opencagedata.com/geocode/v1/json"
+    documentation: "https://opencagedata.com/api"
+    authentication: "API key (free)"
+    rate_limit: "2500 requests/day free"
+    cost: "Free tier available"
+    use_cases:
+      - "Address to coordinates"
+      - "Emergency location"
+
+# =============================================================================
+# VECTOR DATABASES & EMBEDDINGS
+# =============================================================================
+
+vector_databases:
+  
+  # ChromaDB
+  chromadb:
+    name: "ChromaDB"
+    description: "Open source embedding database"
+    base_url: "https://www.trychroma.com/"
+    documentation: "https://docs.trychroma.com/"
+    authentication: "None (self-hosted)"
+    rate_limit: "Unlimited (local)"
+    cost: "Free and open source"
+    use_cases:
+      - "RAG (Retrieval Augmented Generation)"
+      - "Medical knowledge base"
+      - "Semantic search"
+    installation: "pip install chromadb"
+    
+  # Pinecone (Free Tier)
+  pinecone:
+    name: "Pinecone"
+    description: "Managed vector database"
+    base_url: "https://api.pinecone.io"
+    documentation: "https://docs.pinecone.io/"
+    authentication: "API key (free)"
+    rate_limit: "Free tier: 1 index, 100K vectors"
+    cost: "Free tier available"
+    use_cases:
+      - "Cloud backup"
+      - "Distributed search"
+    
+  # Sentence Transformers (Embeddings)
+  sentence_transformers:
+    name: "Sentence Transformers"
+    description: "Generate text embeddings"
+    base_url: "https://www.sbert.net/"
+    documentation: "https://www.sbert.net/docs/usage/usage.html"
+    authentication: "None (library)"
+    rate_limit: "Unlimited (local)"
+    cost: "Free and open source"
+    models:
+      general: "all-MiniLM-L6-v2"
+      medical: "pritamdeka/S-PubMedBert-MS-MARCO"
+      multilingual: "paraphrase-multilingual-mpnet-base-v2"
+    use_cases:
+      - "Text embeddings for RAG"
+      - "Semantic similarity"
+      - "Document retrieval"
+    installation: "pip install sentence-transformers"
+
+# =============================================================================
+# LLM APIs (Free Tiers)
+# =============================================================================
+
+llm_apis:
+  
+  # Google Gemini
+  google_gemini:
+    name: "Google Gemini API"
+    description: "Google's most capable AI model"
+    base_url: "https://generativelanguage.googleapis.com/v1beta"
+    documentation: "https://ai.google.dev/docs"
+    authentication: "API key (free)"
+    rate_limit: "60 requests/minute (free tier)"
+    cost: "Free tier: 60 requests/minute"
+    models:
+      pro: "gemini-1.5-pro"
+    context_window: "1M tokens"
+    use_cases:
+      - "Primary LLM for medical reasoning"
+      - "Multi-turn conversations"
+      - "Context-aware responses"
+    endpoints:
+      generate: "/models/gemini-pro:generateContent"
+
+# =============================================================================
+# AUDIO PROCESSING
+# =============================================================================
+
+audio_processing:
+  
+  # PyDub
+  pydub:
+    name: "PyDub"
+    description: "Audio manipulation library"
+    base_url: "https://github.com/jiaaro/pydub"
+    documentation: "https://github.com/jiaaro/pydub#api-documentation"
+    authentication: "None (library)"
+    rate_limit: "Unlimited (local)"
+    cost: "Free and open source"
+    use_cases:
+      - "Audio format conversion"
+      - "Trim, concatenate audio"
+      - "Adjust volume, speed"
+    installation: "pip install pydub"
+    
+  # librosa
+  librosa:
+    name: "librosa"
+    description: "Audio analysis library"
+    base_url: "https://librosa.org/"
+    documentation: "https://librosa.org/doc/latest/"
+    authentication: "None (library)"
+    rate_limit: "Unlimited (local)"
+    cost: "Free and open source"
+    use_cases:
+      - "Feature extraction"
+      - "Audio analysis"
+      - "Spectrogram generation"
+    installation: "pip install librosa"
+    
+  # webrtcvad
+  webrtcvad:
+    name: "WebRTC VAD"
+    description: "Voice Activity Detection"
+    base_url: "https://github.com/wiseman/py-webrtcvad"
+    documentation: "https://github.com/wiseman/py-webrtcvad#example-usage"
+    authentication: "None (library)"
+    rate_limit: "Unlimited (local)"
+    cost: "Free and open source"
+    use_cases:
+      - "Detect speech vs silence"
+      - "Endpoint detection"
+      - "Audio segmentation"
+    installation: "pip install webrtcvad"
+    
+  # noisereduce
+  noisereduce:
+    name: "noisereduce"
+    description: "Noise reduction for audio"
+    base_url: "https://github.com/timsainb/noisereduce"
+    documentation: "https://github.com/timsainb/noisereduce#usage"
+    authentication: "None (library)"
+    rate_limit: "Unlimited (local)"
+    cost: "Free and open source"
+    use_cases:
+      - "Clean noisy audio"
+      - "Improve STT accuracy"
+      - "Background noise suppression"
+    installation: "pip install noisereduce"
+
+# =============================================================================
+# TELEPHONY & VoIP
+# =============================================================================
+
+telephony:
+  
+  # PJSIP (Open Source SIP Stack)
+  pjsip:
+    name: "PJSIP"
+    description: "Open source SIP, media, and NAT traversal"
+    base_url: "https://www.pjsip.org/"
+    documentation: "https://docs.pjsip.org/"
+    authentication: "None (library)"
+    rate_limit: "Unlimited (self-hosted)"
+    cost: "Free and open source"
+    use_cases:
+      - "SIP calling"
+      - "VoIP integration"
+      - "Audio streaming"
+    python_binding: "pjsua2"
+    installation: "pip install pjsua2"
+    
+  # FreeSWITCH
+  freeswitch:
+    name: "FreeSWITCH"
+    description: "Open source telephony platform"
+    base_url: "https://freeswitch.org/"
+    documentation: "https://freeswitch.org/confluence/"
+    authentication: "None (self-hosted)"
+    rate_limit: "Unlimited (self-hosted)"
+    cost: "Free and open source"
+    use_cases:
+      - "PBX system"
+      - "Call routing"
+      - "IVR"
+    
+  # Asterisk
+  asterisk:
+    name: "Asterisk"
+    description: "Open source PBX"
+    base_url: "https://www.asterisk.org/"
+    documentation: "https://wiki.asterisk.org/"
+    authentication: "None (self-hosted)"
+    rate_limit: "Unlimited (self-hosted)"
+    cost: "Free and open source"
+    use_cases:
+      - "PBX"
+      - "Call center"
+      - "VoIP gateway"
+    
+  # aiortc (WebRTC)
+  aiortc:
+    name: "aiortc"
+    description: "WebRTC and ORTC for Python"
+    base_url: "https://github.com/aiortc/aiortc"
+    documentation: "https://aiortc.readthedocs.io/"
+    authentication: "None (library)"
+    rate_limit: "Unlimited (local)"
+    cost: "Free and open source"
+    use_cases:
+      - "Browser-based calling"
+      - "WebRTC signaling"
+      - "Real-time communication"
+    installation: "pip install aiortc"
+
+# =============================================================================
+# TESTING & QUALITY ASSURANCE
+# =============================================================================
+
+testing_tools:
+  
+  # pytest
+  pytest:
+    name: "pytest"
+    description: "Python testing framework"
+    base_url: "https://pytest.org/"
+    documentation: "https://docs.pytest.org/"
+    cost: "Free and open source"
+    installation: "pip install pytest pytest-asyncio pytest-cov"
+    
+  # Locust (Load Testing)
+  locust:
+    name: "Locust"
+    description: "Load testing tool"
+    base_url: "https://locust.io/"
+    documentation: "https://docs.locust.io/"
+    cost: "Free and open source"
+    use_cases:
+      - "Stress testing"
+      - "Performance testing"
+    installation: "pip install locust"
+    
+  # Bandit (Security Testing)
+  bandit:
+    name: "Bandit"
+    description: "Security linter for Python"
+    base_url: "https://github.com/PyCQA/bandit"
+    documentation: "https://bandit.readthedocs.io/"
+    cost: "Free and open source"
+    use_cases:
+      - "Security vulnerability scanning"
+      - "Code security audit"
+    installation: "pip install bandit"
+
+# =============================================================================
+# MONITORING & OBSERVABILITY
+# =============================================================================
+
+monitoring:
+  
+  # Prometheus
+  prometheus:
+    name: "Prometheus"
+    description: "Monitoring and alerting toolkit"
+    base_url: "https://prometheus.io/"
+    documentation: "https://prometheus.io/docs/"
+    cost: "Free and open source"
+    use_cases:
+      - "Metrics collection"
+      - "Time-series database"
+      - "Alerting"
+    
+  # Grafana
+  grafana:
+    name: "Grafana"
+    description: "Metrics visualization"
+    base_url: "https://grafana.com/"
+    documentation: "https://grafana.com/docs/"
+    cost: "Free and open source"
+    use_cases:
+      - "Dashboard creation"
+      - "Data visualization"
+      - "Monitoring"
+    
+  # OpenTelemetry
+  opentelemetry:
+    name: "OpenTelemetry"
+    description: "Observability framework"
+    base_url: "https://opentelemetry.io/"
+    documentation: "https://opentelemetry.io/docs/"
+    cost: "Free and open source"
+    use_cases:
+      - "Distributed tracing"
+      - "Metrics"
+      - "Logs"
+    installation: "pip install opentelemetry-api opentelemetry-sdk"
+
+# =============================================================================
+# MISCELLANEOUS UTILITIES
+# =============================================================================
+
+utilities:
+  
+  # Tesseract OCR
+  tesseract_ocr:
+    name: "Tesseract OCR"
+    description: "Open source OCR engine"
+    base_url: "https://github.com/tesseract-ocr/tesseract"
+    documentation: "https://tesseract-ocr.github.io/"
+    cost: "Free and open source"
+    use_cases:
+      - "Extract text from images"
+      - "Read prescriptions"
+      - "Lab report parsing"
+    python_wrapper: "pytesseract"
+    installation: "pip install pytesseract"
+    
+  # pdf2image
+  pdf2image:
+    name: "pdf2image"
+    description: "Convert PDF to images"
+    base_url: "https://github.com/Belval/pdf2image"
+    documentation: "https://github.com/Belval/pdf2image#usage"
+    cost: "Free and open source"
+    use_cases:
+      - "PDF processing"
+      - "Extract images from medical documents"
+    installation: "pip install pdf2image"
+    
+  # PyMuPDF (fitz)
+  pymupdf:
+    name: "PyMuPDF"
+    description: "PDF text extraction"
+    base_url: "https://pymupdf.readthedocs.io/"
+    documentation: "https://pymupdf.readthedocs.io/en/latest/"
+    cost: "Free and open source (AGPL)"
+    use_cases:
+      - "Extract text from PDFs"
+      - "Read medical documents"
+      - "Lab reports"
+    installation: "pip install PyMuPDF"
+    
+  # QRCode
+  qrcode:
+    name: "python-qrcode"
+    description: "QR code generation"
+    base_url: "https://github.com/lincolnloop/python-qrcode"
+    documentation: "https://github.com/lincolnloop/python-qrcode#usage"
+    cost: "Free and open source"
+    use_cases:
+      - "Appointment confirmation QR"
+      - "Prescription QR codes"
+      - "Health ID QR"
+    installation: "pip install qrcode[pil]"
+
+# =============================================================================
+# ALTERNATIVE MEDICINE DATABASES
+# =============================================================================
+
+alternative_medicine:
+  
+  # NIH Herbs Database
+  nih_herbs:
+    name: "NIH Herb-Drug Interactions"
+    description: "Natural medicine and drug interactions"
+    base_url: "https://www.ncbi.nlm.nih.gov/books/NBK548/"
+    documentation: "Access via PubMed API"
+    cost: "Free"
+    use_cases:
+      - "Check Ayurvedic herb interactions"
+      - "Traditional Chinese Medicine safety"
+      - "Supplement interactions"
+    
+  # Natural Medicines Database (Limited Free Access)
+  natural_medicines:
+    name: "Natural Medicines Comprehensive Database"
+    description: "Evidence-based info on natural medicines"
+    base_url: "https://naturalmedicines.therapeuticresearch.com/"
+    note: "Paid, but some info available via PubMed searches"
+    use_cases:
+      - "Validate alternative treatments"
+      - "Safety information"
+
+# =============================================================================
+# REGIONAL EMERGENCY NUMBERS DATABASE
+# =============================================================================
+
+emergency_numbers:
+  description: "Emergency contact numbers by country"
+  source: "https://en.wikipedia.org/wiki/List_of_emergency_telephone_numbers"
+  countries:
+    india:
+      ambulance: ["108", "102"]
+      police: "100"
+      fire: "101"
+      unified: "112"
+      disaster: "1078"
+      women_helpline: "1091"
+      child_helpline: "1098"
+    usa:
+      emergency: "911"
+      poison: "1-800-222-1222"
+      suicide: "988"
+      domestic_violence: "1-800-799-7233"
+    uk:
+      emergency: "999"
+      non_urgent: "111"
+      police_non_emergency: "101"
+    eu_general:
+      emergency: "112"
+    australia:
+      emergency: "000"
+      police: "131444"
+    canada:
+      emergency: "911"
+    japan:
+      ambulance: "119"
+      police: "110"
+    china:
+      ambulance: "120"
+      police: "110"
+      fire: "119"
+
+# =============================================================================
+# USAGE NOTES & BEST PRACTICES
+# =============================================================================
+
+usage_guidelines:
+  api_key_management:
+    - "Store all API keys in .env file"
+    - "Never commit .env to git"
+    - "Use environment variables"
+    - "Rotate keys regularly"
+    - "Use separate keys for dev/prod"
+    
+  rate_limiting_strategy:
+    - "Implement exponential backoff"
+    - "Cache frequently accessed data"
+    - "Use multiple API keys for rotation"
+    - "Monitor usage dashboards"
+    - "Set up alerts for quota limits"
+    
+  fallback_hierarchy:
+    stt:
+      primary: "Groq Whisper"
+      secondary: "Google Web Speech"
+      tertiary: "Vosk (offline)"
+    tts:
+      primary: "Edge TTS"
+      secondary: "Google Cloud TTS"
+      tertiary: "Coqui TTS (offline)"
+    llm:
+      primary: "Google Gemini Flash"
+      secondary: "Groq"
+      tertiary: "Ollama (offline)"
+    translation:
+      primary: "LibreTranslate (self-hosted)"
+      secondary: "Argos Translate"
+      tertiary: "OPUS-MT models"
+  
+  compliance_checklist:
+    - "Encrypt all data at rest (AES-256)"
+    - "Use HTTPS for all communications"
+    - "Implement PII scrubbing with Presidio"
+    - "Log access attempts"
+    - "Regular security audits with Bandit"
+    - "HIPAA compliance for US"
+    - "GDPR compliance for EU"
+    - "DPDP compliance for India"
+    
+  cost_optimization:
+    - "Use free tiers first"
+    - "Cache aggressively"
+    - "Batch API requests"
+    - "Compress audio before transmission"
+    - "Use CDN for static assets"
+    - "Self-host when possible"
+
+# =============================================================================
+# INTEGRATION EXAMPLES
+# =============================================================================
+
+integration_examples:
+  
+  complete_voice_pipeline:
+    description: "Audio input to audio output"
+    steps:
+      1: "Audio input (WebRTC/SIP)"
+      2: "VAD detection (webrtcvad)"
+      3: "Noise reduction (noisereduce)"
+      4: "STT (Groq Whisper)"
+      5: "Intent classification (Hugging Face)"
+      6: "Entity extraction (scispaCy)"
+      7: "RAG retrieval (ChromaDB)"
+      8: "LLM reasoning (Gemini)"
+      9: "Safety check (Presidio + Guardrails)"
+      10: "TTS (Edge TTS)"
+      11: "Audio output"
+    
+  multilingual_workflow:
+    description: "Handle non-English conversations"
+    steps:
+      1: "Detect language (Hugging Face)"
+      2: "Translate to English (LibreTranslate)"
+      3: "Process in English (LLM)"
+      4: "Translate response back (LibreTranslate)"
+      5: "TTS in user's language (Edge TTS)"
+    
+  emergency_protocol:
+    description: "Life-threatening situation handling"
+    steps:
+      1: "Keyword detection (custom rules)"
+      2: "Override all queues (priority system)"
+      3: "Capture location (Nominatim)"
+      4: "Dial emergency services (SIP)"
+      5: "Send data packet (patient info)"
+      6: "Stay on line (never hang up)"
+      7: "Silent monitoring (record)"
+
+# =============================================================================
+# DEPLOYMENT CONFIGURATIONS
+# =============================================================================
+
+deployment_configs:
+  
+  minimal_setup:
+    description: "Single server, all free"
+    components:
+      stt: "Google Web Speech"
+      tts: "Edge TTS"
+      llm: "Gemini Flash"
+      database: "SQLite"
+      vector_db: "ChromaDB (self-hosted)"
+      nlp: "spaCy"

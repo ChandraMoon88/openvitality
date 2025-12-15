@@ -1,0 +1,13 @@
+acetaminophen:
+  category: B
+  safe: true
+  lactation_safe: true
+
+ibuprofen:
+  category: C_first_two_trimesters_D_third
+  warning: "Avoid in third trimester"
+
+isotretinoin:
+  category: X
+  safe: false
+  alert: "ABSOLUTELY CONTRAINDICATED - causes birth defects"

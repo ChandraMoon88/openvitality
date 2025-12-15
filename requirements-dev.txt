@@ -1,0 +1,31 @@
+# --------------------------------------------------------------------------------
+# DEVELOPMENT & TESTING DEPENDENCIES
+#
+# This file lists packages used for development, testing, linting, and
+# building the project. These are not needed in a production environment.
+#
+# To install, run: `pip install -r requirements-dev.txt`
+# --------------------------------------------------------------------------------
+
+# Testing Framework
+pytest
+pytest-cov      # Code coverage reporting
+pytest-asyncio # Support for testing asyncio code
+
+# Code Quality & Formatting
+black        # The uncompromising Python code formatter
+flake8          # Linter, for checking style and complexity
+mypy             # Static type checker
+isort           # Sorts imports automatically
+
+# Security Analysis
+bandit          # Finds common security issues in Python code
+
+# Git Hooks
+pre-commit     # Automatically run checks before committing
+
+# Load Testing
+locust        # Performance and load testing
+
+# Test Data Generation
+Faker         # Generate fake data for tests (e.g., patient names)

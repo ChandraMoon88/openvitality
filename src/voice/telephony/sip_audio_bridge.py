@@ -1,0 +1,258 @@
+import pjsua2 as pj
+import logging
+import audioop # For basic audio manipulations
+import collections
+import time
+
+logger = logging.getLogger(__name__)
+
+# Assuming these modules will be implemented later
+# from src.voice.stt.streaming_processor import StreamingSTTProcessor
+# from src.voice.tts.audio_player import AudioPlayer # A hypothetical audio player for SIP
+
+class SipAudioBridge:
+    def __init__(self, call, sample_rate=16000, channels=1, frame_duration_ms=20):
+        self.call = call
+        self.sample_rate = sample_rate
+        self.channels = channels
+        self.frame_duration_ms = frame_duration_ms
+        self.bytes_per_sample = 2 # Assuming 16-bit PCM
+
+        self.audio_source = None # Where we get audio from (e.g., custom media port)
+        self.audio_sink = None   # Where we send audio to (e.g., custom media port)
+
+        self.stt_processor = None # Placeholder for STT processing module
+        self.tts_player = None    # Placeholder for TTS audio playing module
+
+        self.incoming_buffer = collections.deque()
+        self.outgoing_buffer = collections.deque()
+        self.is_active = False
+
+        self.custom_aud_med = None # Our custom AudioMedia object
+
+    def start(self):
+        # Create a custom audio media object (port) to connect to the call
+        # This will act as both sender and receiver for our application logic
+        try:
+            self.custom_aud_med = pj.AudioMedia()
+            self.custom_aud_med.createPort("sip-bridge-port",
+                                            self.sample_rate,
+                                            self.channels,
+                                            int(self.sample_rate * self.frame_duration_ms / 1000 * self.bytes_per_sample),
+                                            self.on_rx_frame,
+                                            self.on_tx_frame)
+
+            # Connect the custom audio media to the call's audio media
+            call_info = self.call.getInfo()
+            for media_idx in range(len(call_info.media)):
+                mi = call_info.media[media_idx]
+                if mi.type == pj.MediaType.PJMEDIA_TYPE_AUDIO and \
+                   (mi.status == pj.MediaStatus.PJMEDIA_MED_STATUS_ACTIVE or \
+                    mi.status == pj.MediaStatus.PJMEDIA_MED_STATUS_CONNECTED):
+                    
+                    call_aud_med = pj.AudioMedia.typecastFromMedia(self.call.getMedia(media_idx))
+                    
+                    # Connect call audio to our custom port (for incoming audio to AI)
+                    call_aud_med.startTransmit(self.custom_aud_med)
+                    
+                    # Connect our custom port to call audio (for outgoing audio from AI)
+                    self.custom_aud_med.startTransmit(call_aud_med)
+                    
+                    logger.info("SipAudioBridge started and connected to call audio media.")
+                    self.is_active = True
+                    break
+            else:
+                logger.error("Could not find active audio media in the call.")
+                self.custom_aud_med.destroy()
+                self.custom_aud_med = None
+
+        except pj.Error as e:
+            logger.error("Failed to start SipAudioBridge: %s", e)
+            if self.custom_aud_med:
+                self.custom_aud_med.destroy()
+                self.custom_aud_med = None
+            self.is_active = False
+
+    def stop(self):
+        if self.is_active and self.custom_aud_med:
+            try:
+                self.custom_aud_med.destroy()
+                self.custom_aud_med = None
+                self.is_active = False
+                logger.info("SipAudioBridge stopped and custom audio port destroyed.")
+            except pj.Error as e:
+                logger.error("Failed to stop SipAudioBridge cleanly: %s", e)
+        else:
+            logger.info("SipAudioBridge was not active or already stopped.")
+
+    def on_rx_frame(self, frame):
+        # This callback receives incoming audio frames from the SIP call
+        # frame.buf contains raw audio data (e.g., PCMU, need decoding)
+        if not self.is_active:
+            return
+
+        # Assuming the call's audio media is already configured to output raw 16kHz mono PCM
+        # by PJSIP itself after codec negotiation and conversion from RTP.
+        # So, frame.buf should be 16-bit 16kHz mono PCM.
+        pcm_data = frame.buf
+
+        # Add to incoming buffer
+        self.incoming_buffer.append(pcm_data)
+
+        # Placeholder for sending to STT processor
+        # if self.stt_processor:
+        #     self.stt_processor.process_audio_chunk(pcm_data)
+        
+        # logger.debug("Received audio frame (size: %d)", len(pcm_data))
+
+    def on_tx_frame(self, frame):
+        # This callback is called by PJSIP when it needs outgoing audio frames to send to the SIP call
+        # We fill frame.buf with audio generated by TTS
+        if not self.is_active:
+            frame.size = 0
+            return
+
+        if self.outgoing_buffer:
+            data = self.outgoing_buffer.popleft()
+            if len(data) <= frame.size:
+                frame.buf = data
+                frame.size = len(data)
+            else:
+                # If the data is larger than the frame size, take what fits and put the rest back
+                frame.buf = data[:frame.size]
+                self.outgoing_buffer.appendleft(data[frame.size:])
+                frame.size = len(frame.buf)
+            # logger.debug("Sent audio frame (size: %d)", frame.size)
+        else:
+            # No audio to send, fill with silence
+            frame.buf = b'\x00' * frame.size
+            # logger.debug("Sent silent audio frame (size: %d)", frame.size)
+            
+    def feed_tts_audio(self, pcm_audio_data):
+        # This method is called by the TTS module to send audio to the SIP call
+        if self.is_active:
+            # Resample/convert if necessary (assuming 16kHz mono PCM for now)
+            # If TTS produces different format, it would be converted here
+            self.outgoing_buffer.append(pcm_audio_data)
+            logger.debug("Fed %d bytes of TTS audio to outgoing buffer.", len(pcm_audio_data))
+        else:
+            logger.warning("SipAudioBridge not active, cannot feed TTS audio.")
+
+    def get_incoming_audio_chunks(self):
+        # This method is called by the STT module to retrieve audio for processing
+        if self.incoming_buffer:
+            chunk = b''.join(self.incoming_buffer)
+            self.incoming_buffer.clear()
+            # Here, you might also want to apply VAD to determine speech segments
+            # and return meaningful chunks to the STT processor.
+            return chunk
+        return b''
+
+    # Placeholder for codec negotiation, DTMF, jitter buffer
+    def configure_codecs(self, codecs_list):
+        logger.info("Configuring codecs: %s", codecs_list)
+        # PJSIP handles codec negotiation automatically based on priorities
+        # We can set priorities as needed.
+        for codec_id in codecs_list:
+            # Example: self.call.setCodecPriority(codec_id, 200)
+            pass
+
+    def handle_dtmf(self, digit):
+        logger.info("DTMF digit received: %s", digit)
+        # This would be handled in SipCall's onDtmfDigit callback and propagated
+        pass
+
+    def apply_jitter_buffer(self, buffer_size_ms):
+        logger.info("Applying jitter buffer with size: %d ms", buffer_size_ms)
+        # PJSIP handles jitter buffering internally.
+        # Configuration might involve media_cfg.jb_max and media_cfg.jb_min
+        pass
+
+# Example usage (for testing purposes only)
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+    # This is a highly simplified mock for pj.Lib and pj.Call for demonstration
+    # In a real scenario, these would be actual PJSIP objects initialized.
+    class MockCall:
+        def __init__(self, call_id="mock_call_123"):
+            self.call_id = call_id
+            self._media = []
+            self.is_active = True # Mock active state
+
+        def getInfo(self):
+            class MockCallInfo:
+                media = [type('obj', (object,), {'type': pj.MediaType.PJMEDIA_TYPE_AUDIO, 'status': pj.MediaStatus.PJMEDIA_MED_STATUS_ACTIVE})()]
+            return MockCallInfo()
+
+        def getMedia(self, idx):
+            # Simulate a PJSIP AudioMedia object
+            class MockAudioMedia:
+                def startTransmit(self, dest_media):
+                    logger.info(f"MockAudioMedia transmitting to {dest_media.__class__.__name__}")
+                def stopTransmit(self, dest_media):
+                    logger.info(f"MockAudioMedia stopped transmitting to {dest_media.__class__.__name__}")
+            return MockAudioMedia()
+
+    class MockLib:
+        def audDevManager(self):
+            class MockAudDevManager:
+                def getCaptureDevMedia(self):
+                    return MockCall().getMedia(0) # Not actually used in bridge, but for completeness
+                def getPlaybackDevMedia(self):
+                    return MockCall().getMedia(0) # Not actually used in bridge, but for completeness
+            return MockAudDevManager()
+
+        def createAudioMedia(self, *args):
+            logger.info("Mock createAudioMedia called")
+            return self.custom_media_port
+
+        def deleteAudioMedia(self, media_obj):
+            logger.info(f"Mock deleteAudioMedia called for {media_obj}")
+
+    # Set a mock for PJSIP library instance
+    # pj.Lib.instance = MockLib # This line would cause an error if pj.Lib is not fully mocked
+    
+    # Create a mock call
+    mock_call_instance = MockCall()
+
+    # Create the audio bridge
+    bridge = SipAudioBridge(mock_call_instance)
+    
+    # Simulate starting the bridge
+    bridge.start()
+
+    if bridge.is_active:
+        logger.info("SipAudioBridge mock started successfully.")
+
+        # Simulate incoming audio (from SIP call -> on_rx_frame)
+        incoming_pcm_chunk = b'\x01\x02\x03\x04' * 80 # Example 16kHz mono 16-bit PCM for 20ms
+        mock_frame = pj.Frame()
+        mock_frame.buf = incoming_pcm_chunk
+        mock_frame.size = len(incoming_pcm_chunk)
+        bridge.on_rx_frame(mock_frame)
+        logger.info("Simulated incoming audio.")
+
+        # Simulate STT requesting audio
+        stt_chunk = bridge.get_incoming_audio_chunks()
+        logger.info("STT retrieved audio chunk of size: %d", len(stt_chunk))
+        if stt_chunk == incoming_pcm_chunk:
+            logger.info("STT chunk matches incoming audio (mock success).")
+        else:
+            logger.error("STT chunk mismatch (mock failure).")
+
+        # Simulate TTS feeding audio (AI response -> feed_tts_audio)
+        outgoing_pcm_audio = b'\x05\x06\x07\x08' * 160 # Example TTS audio
+        bridge.feed_tts_audio(outgoing_pcm_audio)
+        logger.info("Simulated feeding TTS audio.")
+
+        # Simulate PJSIP requesting outgoing audio (on_tx_frame -> SIP call)
+        mock_tx_frame = pj.Frame()
+        mock_tx_frame.size = int(bridge.sample_rate * bridge.frame_duration_ms / 1000 * bridge.bytes_per_sample)
+        bridge.on_tx_frame(mock_tx_frame)
+        logger.info("Simulated outgoing audio request from PJSIP. Sent %d bytes.", len(mock_tx_frame.buf))
+
+        bridge.stop()
+        logger.info("SipAudioBridge mock stopped successfully.")
+    else:
+        logger.error("SipAudioBridge mock failed to start.")
