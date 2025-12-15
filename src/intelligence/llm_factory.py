@@ -36,7 +36,7 @@ class LLMFactory:
         #"gemini": GeminiProvider, # Removed placeholder mapping
         # "huggingface": HuggingFaceProvider,  # Removed initial registration
         # Register other providers here
-    }    }
+    }
 
     @staticmethod
     def register_provider(name: str, provider_class: type[LLMInterface]):

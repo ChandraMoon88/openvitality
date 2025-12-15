@@ -15,6 +15,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Request, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
+from contextlib import asynccontextmanager # New import
 
 from src.core.orchestrator import Orchestrator
 from src.core.api_manager import APIManager
@@ -29,11 +30,42 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+# Define lifespan context manager
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Handles startup and shutdown events for the application.
+    """
+    # Startup logic
+    app_db_url = os.getenv("APPLICATION_DB_URL")
+    app.state.orchestrator = None
+    if app_db_url:
+        try:
+            app.state.orchestrator = Orchestrator(db_url=app_db_url)
+            await app.state.orchestrator.connect_services()
+            logger.info("Orchestrator initialized and connected.")
+        except Exception as e:
+            logger.critical(f"Orchestrator initialization failed: {e}", exc_info=True)
+            # Depending on severity, you might want to re-raise or exit
+    else:
+        logger.warning("APPLICATION_DB_URL not set. Orchestrator will not be available.")
+
+    # Yield control to the application
+    yield
+
+    # Shutdown logic
+    if getattr(app.state, "orchestrator", None):
+        await app.state.orchestrator.close_services()
+        logger.info("Orchestrator services closed.")
+
+    logger.info("Application shutdown complete.")
+
 # --- FastAPI App Initialization ---
 app = FastAPI(
     title="OpenVitality AI API",
     version="0.1.0",
     description="API for providing AI-driven healthcare consultations.",
+    lifespan=lifespan
 )
 
 # --- Middleware Configuration ---
@@ -60,36 +92,7 @@ async def log_requests(request: Request, call_next):
     
     return response
 
-# --- Startup and Shutdown Events ---
-@app.on_event("startup")
-async def startup_event():
-    """
-    Actions to perform on application startup.
-    - Initialize Orchestrator and its database connections
-    """
-    # Initialize Orchestrator (for application logic and DB)
-    app_db_url = os.getenv("APPLICATION_DB_URL")
-    app.state.orchestrator = None
-    if app_db_url:
-        try:
-            app.state.orchestrator = Orchestrator(db_url=app_db_url)
-            await app.state.orchestrator.connect_services()
-        except Exception as e:
-            logger.critical(f"Orchestrator initialization failed: {e}", exc_info=True)
-    else:
-        logger.warning("APPLICATION_DB_URL not set. Orchestrator will not be available.")
 
-@app.on_event("shutdown")
-async def shutdown_event():
-    """
-    Actions to perform on application shutdown.
-    - Gracefully close database connections
-    """
-    # Close Orchestrator connections
-    if getattr(app.state, "orchestrator", None):
-        await app.state.orchestrator.close_services()
-
-    logger.info("Application shutdown complete.")
 
 # --- Global Exception Handler ---
 # @app.exception_handler(Exception)
